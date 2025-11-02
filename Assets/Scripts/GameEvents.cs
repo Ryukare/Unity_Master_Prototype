@@ -16,4 +16,11 @@ public static class GameEvents
         OnProgressValueChanged?.Invoke(value);
     }
     
+    public static event Action<int> OnClickPowerIncrease;
+
+    public static void InvokeOnClickPowerIncrease(int value)
+    {
+        OnClickPowerIncrease?.Invoke(value);
+    }
+    
 }

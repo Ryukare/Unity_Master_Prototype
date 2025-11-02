@@ -4,7 +4,8 @@ using UnityEngine;
 public class ResourcesManager : MonoBehaviour
 {
     private int _progress;
-
+    private int _clickPower = 1;
+    
     public int Progress
     {
         get => _progress;
@@ -18,6 +19,7 @@ public class ResourcesManager : MonoBehaviour
     private void OnEnable()
     {
         GameEvents.OnProgressIncrease += IncreaseProgress;
+        GameEvents.OnClickPowerIncrease += IncreaseClickPower;
     }
     private void OnDisable()
     {
@@ -26,7 +28,12 @@ public class ResourcesManager : MonoBehaviour
     
     private void IncreaseProgress(int value)
     {
-        Progress += value;
-        Debug.Log(_progress);
+        Progress += value * _clickPower;
+    }
+    
+    private void IncreaseClickPower(int value)
+    {
+        _clickPower += value;
+        Debug.Log($"Click Power: {_clickPower}");
     }
 }
