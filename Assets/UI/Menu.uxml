@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement class="menu-root">
+        <ui:Label text="My Game" class="title" />
+        <ui:Button name="startButton" text="Start Game" />
+        <ui:Button name="quitButton" text="Quit" />
+    </ui:VisualElement>
+</ui:UXML>
