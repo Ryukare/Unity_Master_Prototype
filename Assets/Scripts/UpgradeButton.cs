@@ -17,14 +17,36 @@ public class UpgradeButton : MonoBehaviour
     {
         _button = GetComponent<Button>();
         _button.onClick.AddListener(EnableUpgrade);
+        _button.interactable = false;
         upgradeNameText.text = upgradeInfo.upgradeName;
-        upgradeCostText.text = upgradeInfo.cost.ToString();
-        upgradeValueText.text = upgradeInfo.clickPowerIncrease.ToString();
+        upgradeCostText.text = $"Cost: {upgradeInfo.cost.ToString()}";
+        upgradeValueText.text = $"Click Power +{upgradeInfo.clickPowerIncrease.ToString()}";
     }
 
-    private void EnableUpgrade()
+    private void OnEnable()
     {
-        GameEvents.InvokeOnClickPowerIncrease(upgradeInfo.clickPowerIncrease);
+        GameEvents.OnProgressValueChanged += CheckIfCanBeEnable;
     }
     
+    private void OnDisable()
+    {
+        GameEvents.OnProgressValueChanged -= CheckIfCanBeEnable;
+    }
+    
+    private void EnableUpgrade()
+    {
+        GameEvents.InvokeOnClickPowerIncrease(upgradeInfo.clickPowerIncrease, upgradeInfo.cost);
+    }
+
+    private void CheckIfCanBeEnable(int value)
+    {
+        if (value <= 0)
+        {
+            _button.interactable = false;
+        }
+        else
+        {
+            _button.interactable = true;
+        }
+    }
 }

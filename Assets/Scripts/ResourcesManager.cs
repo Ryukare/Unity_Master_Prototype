@@ -1,7 +1,5 @@
-using System;
-using UnityEngine;
 
-public class ResourcesManager : MonoBehaviour
+public class ResourcesManager : Singleton<ResourcesManager>
 {
     private int _progress;
     private int _clickPower = 1;
@@ -13,6 +11,16 @@ public class ResourcesManager : MonoBehaviour
         {
             _progress = value; 
             GameEvents.InvokeOnProgressValueChanged(value);
+        }
+    }
+
+    public int ClickPower
+    {
+        get => _clickPower;
+        set
+        {
+            _clickPower = value; 
+            GameEvents.InvokeOnClickPowerValueChanged(value);
         }
     }
 
@@ -31,9 +39,9 @@ public class ResourcesManager : MonoBehaviour
         Progress += value * _clickPower;
     }
     
-    private void IncreaseClickPower(int value)
+    private void IncreaseClickPower(int upgradeValue, int cost)
     {
-        _clickPower += value;
-        Debug.Log($"Click Power: {_clickPower}");
+        ClickPower += upgradeValue;
+        Progress -= cost;
     }
 }
