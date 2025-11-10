@@ -16,6 +16,13 @@ public static class GameEvents
         OnProgressValueChanged?.Invoke(value);
     }
     
+    //Events related to changing upgrade multiplier
+    public static event Action<int> OnMultiplierChanged;
+    public static void InvokeOnMultiplierChanged(int value)
+    {
+        OnMultiplierChanged?.Invoke(value);
+    }
+    
     //Events related to upgrades
     public static event Action OnFirstUpgradeDone;
     public static void InvokeOnFirstUpgradeDone()
@@ -23,36 +30,36 @@ public static class GameEvents
         OnFirstUpgradeDone?.Invoke();
     }
     
-    //Events related to paying costs 
-    public static event Action<int> OnCostPayed;
-    public static void InvokeOnCostPayed(int value)
+    //Events related to paying progress cost
+    public static event Action<int> OnProgressCostPayed;
+    public static void InvokeOnProgressCostPayed(int value)
     {
-        OnCostPayed?.Invoke(value);
+        OnProgressCostPayed?.Invoke(value);
     }
 
     //Events related to Click Power
-    public static event Action<int> OnClickPowerIncrease;
-    public static void InvokeOnClickPowerIncrease(int value)
-    {
-        OnClickPowerIncrease?.Invoke(value);
-    }
-    
     public static event Action<int> OnClickPowerValueChanged;
     public static void InvokeOnClickPowerValueChanged(int value)
     {
         OnClickPowerValueChanged?.Invoke(value);
     }
     
-    //Events related to Progress Per Second
-    public static event Action< int> OnProgressPerSecondIncrease;
-    public static void InvokeOnProgressPerSecondIncrease(int value)
+    public static event Action<int> OnClickPowerChanged;
+    public static void InvokeOnClickPowerChanged(int value)
     {
-        OnProgressPerSecondIncrease?.Invoke(value);
+        OnClickPowerChanged?.Invoke(value);
     }
     
+    
+    //Events related to Progress Per Second
     public static event Action<int> OnProgressPerSecondValueChanged;
     public static void InvokeOnProgressPerSecondValueChanged(int value)
     {
         OnProgressPerSecondValueChanged?.Invoke(value);
+    }
+    public static event Action<int> OnProgressPerSecondChanged;
+    public static void InvokeOnProgressPerSecondChanged(int value)
+    {
+        OnProgressPerSecondChanged?.Invoke(value);
     }
 }

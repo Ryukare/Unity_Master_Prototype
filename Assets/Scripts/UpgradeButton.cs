@@ -14,89 +14,102 @@ public class UpgradeButton : MonoBehaviour
     private UpgradeScriptableObject _upgradeInfo;
 
     private int _upgradeCount;
+    private int _multiplier;
 
     private void Awake()
     {
         _button = GetComponent<Button>();
-        _button.onClick.AddListener(EnableUpgrade);
+        _button.onClick.AddListener(TriggerUpgrade);
         _button.interactable = false;
+        _multiplier = ResourcesManager.Instance.Multiplier;
+        if (_multiplier == 0)
+        {
+            _multiplier = 1;
+        }
     }
 
     private void OnEnable()
     {
         GameEvents.OnProgressValueChanged += CheckIfCanBeEnabled;
+        GameEvents.OnMultiplierChanged += SetMultiplierValues;
     }
     
     private void OnDisable()
     {
         GameEvents.OnProgressValueChanged -= CheckIfCanBeEnabled;
+        GameEvents.OnMultiplierChanged -= SetMultiplierValues;
     }
     
-    private void EnableUpgrade()
+    private void TriggerUpgrade()
     {
         if (_upgradeCount == 0)
         {
             GameEvents.InvokeOnFirstUpgradeDone();
         }
-        _upgradeCount++;
+        _upgradeCount += _multiplier;
         SetUpgradeName();
         
         if (_upgradeInfo.clickPowerIncrease > 0)
         {
-            GameEvents.InvokeOnClickPowerIncrease(_upgradeInfo.clickPowerIncrease);
+            GameEvents.InvokeOnClickPowerChanged(_upgradeInfo.clickPowerIncrease * _multiplier);
         }
 
         if (_upgradeInfo.progressPerSecondIncrease > 0)
         {
-            GameEvents.InvokeOnProgressPerSecondIncrease(_upgradeInfo.progressPerSecondIncrease);
+            GameEvents.InvokeOnProgressPerSecondChanged(_upgradeInfo.progressPerSecondIncrease * _multiplier);
         }
-        
-        GameEvents.InvokeOnCostPayed(_upgradeInfo.cost);
-    }
 
+        GameEvents.InvokeOnProgressCostPayed(_upgradeInfo.progressCost * _multiplier);
+    }
+    
     private void CheckIfCanBeEnabled(int progress)
     {
         if (_upgradeInfo == null)
         {
             return;
         }
-        if (progress < _upgradeInfo.cost)
-        {
-            _button.interactable = false;
-        }
-        else
-        {
-            _button.interactable = true;
-        }
+        _button.interactable = progress >= _upgradeInfo.progressCost * _multiplier;
     }
 
     public void SetUpgradeInfo(UpgradeScriptableObject upgradeInfo)
     {
         _upgradeInfo = upgradeInfo;
-        upgradeNameText.text = $"{upgradeInfo.upgradeName} | {_upgradeCount}";
-        upgradeCostText.text = $"Cost: {upgradeInfo.cost.ToString()}";
+        SetUpgradeText();
+    }
+
+    private void SetUpgradeText()
+    {
+        upgradeNameText.text = $"{_upgradeInfo.upgradeName} | {_upgradeCount}";
+        upgradeCostText.text = $"Cost: {(_upgradeInfo.progressCost * _multiplier).ToString()}";
         
-        if (upgradeInfo.clickPowerIncrease == 0)
+        if (_upgradeInfo.clickPowerIncrease == 0)
         {
             clickPowerValueText.gameObject.SetActive(false);
         }
         else
         {
-            clickPowerValueText.text = $"Click Power +{upgradeInfo.clickPowerIncrease.ToString()}";
+            clickPowerValueText.text = $"Click Power +{(_upgradeInfo.clickPowerIncrease * _multiplier).ToString()}";
         }
         
-        if (upgradeInfo.progressPerSecondIncrease == 0)
+        if (_upgradeInfo.progressPerSecondIncrease == 0)
         {
             progressPerSecondValueText.gameObject.SetActive(false);
         }
         else
         {
-            progressPerSecondValueText.text = $"Progress Per Second +{upgradeInfo.progressPerSecondIncrease.ToString()}";
+            progressPerSecondValueText.text = $"Progress Per Second +{(_upgradeInfo.progressPerSecondIncrease * _multiplier).ToString()}";
         }
     }
-
+    
     private void SetUpgradeName()
     {
         upgradeNameText.text = $"{_upgradeInfo.upgradeName} | {_upgradeCount}";
+    }
+
+    private void SetMultiplierValues(int newMultiplier)
+    {
+        _multiplier = newMultiplier;
+        SetUpgradeText();
+        CheckIfCanBeEnabled(ResourcesManager.Instance.Progress);
     }
 }

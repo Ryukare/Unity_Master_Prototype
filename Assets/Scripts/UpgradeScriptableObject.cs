@@ -7,7 +7,7 @@ using UnityEngine;
 public class UpgradeScriptableObject : ScriptableObject
 {
     public string upgradeName;
-    public int cost;
+    public int progressCost;
     public int clickPowerIncrease;
     public int progressPerSecondIncrease;
 }

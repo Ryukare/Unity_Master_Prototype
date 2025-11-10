@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Upgrade_3
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeScriptableObject
   upgradeName: Better Support
-  cost: 100
+  progressCost: 100
   clickPowerIncrease: 2
   progressPerSecondIncrease: 1

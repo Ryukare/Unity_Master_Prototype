@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Upgrade_2
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeScriptableObject
   upgradeName: Simple Research
-  cost: 10
+  progressCost: 10
   clickPowerIncrease: 0
   progressPerSecondIncrease: 1

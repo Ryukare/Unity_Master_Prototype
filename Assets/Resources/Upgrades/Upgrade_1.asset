@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Upgrade_1
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeScriptableObject
   upgradeName: Manual Labour
-  cost: 1
+  progressCost: 1
   clickPowerIncrease: 1
   progressPerSecondIncrease: 0
