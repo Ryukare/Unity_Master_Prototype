@@ -18,7 +18,7 @@ namespace Text
         }
         private void OnDisable()
         {
-            GameEvents.OnProgressIncrease -= ChangeText;
+            GameEvents.OnProgressValueChanged -= ChangeText;
         }
 
         private void ChangeText(int value)

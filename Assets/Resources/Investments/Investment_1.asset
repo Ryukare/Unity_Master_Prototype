@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3bff8a5d9906904d9212899bb3703d0, type: 3}
-  m_Name: Upgrade_1
+  m_Name: Investment_1
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeScriptableObject
-  upgradeName: Manual Labour
+  investmentName: Basic Tools
   progressCost: 1
   clickPowerIncrease: 1
   progressPerSecondIncrease: 0

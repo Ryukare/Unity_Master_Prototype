@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3bff8a5d9906904d9212899bb3703d0, type: 3}
-  m_Name: Upgrade_3
+  m_Name: Investment_2
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeScriptableObject
-  upgradeName: Better Support
-  progressCost: 100
-  clickPowerIncrease: 2
+  investmentName: Cheap Machines
+  progressCost: 10
+  clickPowerIncrease: 0
   progressPerSecondIncrease: 1

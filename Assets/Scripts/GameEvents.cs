@@ -3,11 +3,17 @@ using System;
 public static class GameEvents
 {
     
-    //Events related to progress resource
+    //Events related to progress
     public static event Action<int> OnProgressIncrease;
     public static void InvokeOnProgressIncrease(int value)
     {
         OnProgressIncrease?.Invoke(value);
+    }
+    
+    public static event Action OnProgressIncreaseByClicking;
+    public static void InvokeOnProgressIncreaseByClicking()
+    {
+        OnProgressIncreaseByClicking?.Invoke();
     }
     
     public static event Action<int> OnProgressValueChanged;

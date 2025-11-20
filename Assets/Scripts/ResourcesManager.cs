@@ -44,6 +44,7 @@ public class ResourcesManager : Singleton<ResourcesManager>
     private void OnEnable()
     {
         GameEvents.OnProgressIncrease += IncreaseProgress;
+        GameEvents.OnProgressIncreaseByClicking += IncreaseProgressByClicking;
         GameEvents.OnClickPowerChanged += IncreaseClickPower;
         GameEvents.OnProgressPerSecondChanged += IncreaseProgressPerSecond;
         GameEvents.OnProgressCostPayed += DecreaseProgress;
@@ -52,6 +53,7 @@ public class ResourcesManager : Singleton<ResourcesManager>
     private void OnDisable()
     {
         GameEvents.OnProgressIncrease -= IncreaseProgress;
+        GameEvents.OnProgressIncreaseByClicking -= IncreaseProgressByClicking;
         GameEvents.OnClickPowerChanged -= IncreaseClickPower;
         GameEvents.OnProgressPerSecondChanged -= IncreaseProgressPerSecond;
         GameEvents.OnProgressCostPayed -= DecreaseProgress;
@@ -72,11 +74,16 @@ public class ResourcesManager : Singleton<ResourcesManager>
         }
     }
     
-    private void IncreaseProgress(int value)
+    private void IncreaseProgressByClicking()
     {
-        Progress += value * _clickPower;
+        Progress += _clickPower;
     }
 
+    private void IncreaseProgress(int value)
+    {
+        Progress += value;
+    }
+    
     private void DecreaseProgress(int value)
     {
         Progress -= value;
