@@ -7,19 +7,21 @@ using UnityEngine.UI;
 public class Building : MonoBehaviour
 {
     [Header("Info")]
-    [SerializeField] private BuildingScriptableObject buildingInfo;
+    [SerializeField] protected BuildingScriptableObject buildingInfo;
     
     [Header("Components")]
-    [SerializeField] private TextMeshProUGUI buildingNameText;
-    [SerializeField] private TextMeshProUGUI buildingCostText;
-    [SerializeField] private TextMeshProUGUI progressPerProductionText;
-    [SerializeField] private TextMeshProUGUI productionTimeText;
-    [SerializeField] private Button button;
-    [SerializeField] private Slider slider;
-    private int _currentProductionTime;
-    private float _productionPercentage;
-    private int _remainingProductionTime;
-    private int _level;
+    [SerializeField] protected TextMeshProUGUI buildingNameText;
+    [SerializeField] protected TextMeshProUGUI buildingCostText;
+    [SerializeField] protected TextMeshProUGUI progressPerProductionText;
+    [SerializeField] protected TextMeshProUGUI productionTimeText;
+    [SerializeField] protected TextMeshProUGUI levelText;
+    [SerializeField] protected Button button;
+    [SerializeField] protected Slider slider;
+    
+    protected int currentProductionTime;
+    protected float _productionPercentage;
+    protected int _remainingProductionTime;
+    protected int _level;
 
     private void OnEnable()
     {
@@ -31,7 +33,7 @@ public class Building : MonoBehaviour
         GameEvents.OnProgressValueChanged -= CheckIfCanBeBought;
     }
     
-    private void Awake()
+    protected virtual void Awake()
     {
         _remainingProductionTime = buildingInfo.productionTime;
         SetBuildingText();
@@ -41,23 +43,23 @@ public class Building : MonoBehaviour
 
     private void SetBuildingText()
     {
-        buildingNameText.text = $"{buildingInfo.buildingName} | {_level}";
+        buildingNameText.text = $"{buildingInfo.buildingName}";
         buildingCostText.text = $"{(buildingInfo.progressCost).ToString()} Progress";
         progressPerProductionText.text = $"{(buildingInfo.progressPerProduction * _level).ToString()}";
         productionTimeText.text = $"{(_remainingProductionTime/60).ToString()}:{(_remainingProductionTime%60).ToString()}";
     }
 
-    private void SetBuildingData()
+    protected void UpdateBuildingText(double modifier)
     {
-        buildingNameText.text = $"{buildingInfo.buildingName} | {_level}";
-        progressPerProductionText.text = $"{(buildingInfo.progressPerProduction * _level).ToString()}";
+        levelText.text = $"{_level}";
+        progressPerProductionText.text = $"{(buildingInfo.progressPerProduction * _level * modifier).ToString()}";
     }
 
-    private void SetProductionTime()
+    protected void UpdateProductionTime(double modifier)
     {
-        _currentProductionTime++;
-        _remainingProductionTime = buildingInfo.productionTime - _currentProductionTime;
-        _productionPercentage = (float)_currentProductionTime / buildingInfo.productionTime;
+        currentProductionTime++;
+        _remainingProductionTime = (int)(buildingInfo.productionTime * modifier) - currentProductionTime;
+        _productionPercentage = currentProductionTime / (float)(buildingInfo.productionTime * modifier);
         productionTimeText.text = $"{(_remainingProductionTime/60).ToString()}:{(_remainingProductionTime%60).ToString()}";
         slider.value = _productionPercentage;
     }
@@ -67,26 +69,26 @@ public class Building : MonoBehaviour
         button.interactable = progress >= buildingInfo.progressCost;
     }
     
-    private void BuyBuilding()
+    protected virtual void BuyBuilding()
     {
         if (_level == 0)
         {
             StartCoroutine(EnableProduction());
         }
         _level++;
-        SetBuildingData();
+        UpdateBuildingText(1);
         GameEvents.InvokeOnProgressCostPayed(buildingInfo.progressCost);
     }
     
-    private IEnumerator EnableProduction()
+    protected virtual IEnumerator EnableProduction()
     {
         while (true)
         {
             yield return new WaitForSeconds(1f);
-            SetProductionTime();
-            if (_currentProductionTime == buildingInfo.productionTime)
+            UpdateProductionTime(1);
+            if (currentProductionTime == buildingInfo.productionTime)
             {
-                _currentProductionTime = 0;
+                currentProductionTime = 0;
                 _remainingProductionTime = buildingInfo.productionTime;
                 productionTimeText.text = $"{(_remainingProductionTime/60).ToString()}:{(_remainingProductionTime%60).ToString()}";
                 slider.value = 0;
