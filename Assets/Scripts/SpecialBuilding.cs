@@ -47,12 +47,12 @@ public class SpecialBuilding : Building
         
         protected override void BuyBuilding()
         {
-                if (_level == 0)
+                if (level == 0)
                 {
                         StartCoroutine(EnableProduction());
                         modeDropDown.interactable = true;
                 }
-                _level++;
+                level++;
                 UpdateBuildingText(_productionQuantityModifier);
                 GameEvents.InvokeOnProgressCostPayed(buildingInfo.progressCost);
         }
@@ -68,7 +68,7 @@ public class SpecialBuilding : Building
                                 currentProductionTime = 0;
                                 slider.value = 0;
                                 
-                                GameEvents.InvokeOnProgressIncrease((int)(buildingInfo.progressPerProduction * _level *
+                                GameEvents.InvokeOnProgressIncrease((int)(buildingInfo.progressPerProduction * level *
                                                                           _productionQuantityModifier));
                                 _currentModeIndex = _awaitingModeIndex;
                                 ChangeModifiers();

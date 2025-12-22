@@ -21,38 +21,51 @@ public class Building : MonoBehaviour
     protected int currentProductionTime;
     protected float _productionPercentage;
     protected int _remainingProductionTime;
-    protected int _level;
+    protected int level;
+    private int _multiplier;
 
     private void OnEnable()
     {
         GameEvents.OnProgressValueChanged += CheckIfCanBeBought;
+        GameEvents.OnMultiplierChanged += SetMultiplierValues;
     }
 
     private void OnDisable()
     {
         GameEvents.OnProgressValueChanged -= CheckIfCanBeBought;
+        GameEvents.OnMultiplierChanged -= SetMultiplierValues;
     }
     
     protected virtual void Awake()
     {
         _remainingProductionTime = buildingInfo.productionTime;
-        SetBuildingText();
         button.onClick.AddListener(BuyBuilding);
         button.interactable = false;
+        _multiplier = ResourcesManager.Instance.Multiplier;
+        if (_multiplier == 0)
+        {
+            _multiplier = 1;
+        }
+        SetBuildingText();
     }
 
     private void SetBuildingText()
     {
         buildingNameText.text = $"{buildingInfo.buildingName}";
-        buildingCostText.text = $"{(buildingInfo.progressCost).ToString()} Progress";
-        progressPerProductionText.text = $"{(buildingInfo.progressPerProduction * _level).ToString()}";
+        SetCostText();
+        progressPerProductionText.text = $"{(buildingInfo.progressPerProduction * level).ToString()}";
         productionTimeText.text = $"{(_remainingProductionTime/60).ToString()}:{(_remainingProductionTime%60).ToString()}";
     }
 
+    private void SetCostText()
+    {
+        buildingCostText.text = $"{(buildingInfo.progressCost * _multiplier).ToString()} Progress";
+    }
+    
     protected void UpdateBuildingText(double modifier)
     {
-        levelText.text = $"{_level}";
-        progressPerProductionText.text = $"{(buildingInfo.progressPerProduction * _level * modifier).ToString()}";
+        levelText.text = $"{level}";
+        progressPerProductionText.text = $"{(buildingInfo.progressPerProduction * level * modifier).ToString()}";
     }
 
     protected void UpdateProductionTime(double modifier)
@@ -66,18 +79,18 @@ public class Building : MonoBehaviour
     
     private void CheckIfCanBeBought(int progress)
     {
-        button.interactable = progress >= buildingInfo.progressCost;
+        button.interactable = progress >= buildingInfo.progressCost * _multiplier;;
     }
     
     protected virtual void BuyBuilding()
     {
-        if (_level == 0)
+        if (level == 0)
         {
             StartCoroutine(EnableProduction());
         }
-        _level++;
+        level += 1 * _multiplier;;
         UpdateBuildingText(1);
-        GameEvents.InvokeOnProgressCostPayed(buildingInfo.progressCost);
+        GameEvents.InvokeOnProgressCostPayed(buildingInfo.progressCost * _multiplier);
     }
     
     protected virtual IEnumerator EnableProduction()
@@ -92,8 +105,15 @@ public class Building : MonoBehaviour
                 _remainingProductionTime = buildingInfo.productionTime;
                 productionTimeText.text = $"{(_remainingProductionTime/60).ToString()}:{(_remainingProductionTime%60).ToString()}";
                 slider.value = 0;
-                GameEvents.InvokeOnProgressIncrease(buildingInfo.progressPerProduction * _level);
+                GameEvents.InvokeOnProgressIncrease(buildingInfo.progressPerProduction * level);
             }
         }
+    }
+    
+    private void SetMultiplierValues(int newMultiplier)
+    {
+        _multiplier = newMultiplier;
+        SetCostText();
+        CheckIfCanBeBought(ResourcesManager.Instance.Progress);
     }
 }
