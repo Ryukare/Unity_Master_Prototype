@@ -7,32 +7,32 @@ public class UpgradeList : MonoBehaviour
     [SerializeField] private GameObject upgradeButtonPrefab; 
     
     private InvestmentScriptableObject[] _upgradeList;
-    private int _currentUpgradeIndex;
+    private int _currentInvestmentIndex;
 
     private void Awake()
     {
         _upgradeList = Resources.LoadAll<InvestmentScriptableObject>("Investments");
-        InstantiateUpgrade();
+        InstantiateInvestment();
     }
 
     private void OnEnable()
     {
-        GameEvents.OnFirstUpgradeDone += InstantiateUpgrade;
+        GameEvents.OnFirstUpgradeDone += InstantiateInvestment;
     }
 
     private void OnDisable()
     {
-        GameEvents.OnFirstUpgradeDone -= InstantiateUpgrade;
+        GameEvents.OnFirstUpgradeDone -= InstantiateInvestment;
     }
 
-    private void InstantiateUpgrade()
+    private void InstantiateInvestment()
     {
-        if (_currentUpgradeIndex == _upgradeList.Length)
+        if (_currentInvestmentIndex == _upgradeList.Length)
         {
             return;
         }
         var button = Instantiate(upgradeButtonPrefab, gameObject.transform).GetComponent<InvestmentButton>();
-        button.SetUpgradeInfo(_upgradeList[_currentUpgradeIndex]);
-        _currentUpgradeIndex++;
+        button.SetUpgradeInfo(_upgradeList[_currentInvestmentIndex]);
+        _currentInvestmentIndex++;
     }
 }
